@@ -67,4 +67,33 @@ jobs:
           configuration: Release
           projects: 'tests/DevOpsChallenge.SalesApi.Business.UnitTests/*.csproj'
           buildSwitches: -p:SkipSignAssembly=true
+  
+  codeql:
+    name: 🛡️ Security Analysis
+    needs: [build,test]
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Restore Dependencies
+        uses: codebeltnet/dotnet-restore@v2
+
+      - name: Prepare CodeQL SAST Analysis
+        uses: codebeltnet/codeql-scan@v1
+
+      - name: Build
+        uses: codebeltnet/dotnet-build@v2
+        with:
+          buildSwitches: -p:SkipSignAssembly=true
+          uploadBuildArtifact: false
+          framework: net5.0
+
+      - name: Finalize CodeQL SAST Analysis
+        uses: codebeltnet/codeql-scan-finalize@v1
 
