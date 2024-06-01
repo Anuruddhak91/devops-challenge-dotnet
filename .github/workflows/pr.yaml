@@ -1,0 +1,70 @@
+---
+name: pr pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: 🛠️ Test Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Restore dependencies
+        uses: codebeltnet/dotnet-restore@v2
+
+      - name: Build for Preview
+        uses: codebeltnet/dotnet-build@v2
+        with:
+          configuration: Debug
+          framework: net5.0
+
+      - name: Build for Production
+        uses: codebeltnet/dotnet-build@v2
+        with:
+          configuration: Release
+          framework: net5.0
+
+  test:
+    name: 🧪 Test
+    needs: [build]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Install .NET Tool - Report Generator
+        uses: codebeltnet/dotnet-tool-install-reportgenerator@v1
+
+      - name: Test with Debug build
+        uses: codebeltnet/dotnet-test@v2
+        with:
+          configuration: Debug
+          projects: 'tests/DevOpsChallenge.SalesApi.Business.UnitTests/*.csproj'
+          buildSwitches: -p:SkipSignAssembly=true
+
+      - name: Test with Release build
+        uses: codebeltnet/dotnet-test@v2
+        with:
+          configuration: Release
+          projects: 'tests/DevOpsChallenge.SalesApi.Business.UnitTests/*.csproj'
+          buildSwitches: -p:SkipSignAssembly=true
+
