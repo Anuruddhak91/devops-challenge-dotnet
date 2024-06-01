@@ -1,0 +1,22 @@
+# Ignore files and directories that don't need to be copied to the container
+**/.classpath
+**/.dockerignore
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/*.sh
+**/*.md
+**/README.md
+**/LICENSE
+**/*.yml
+**/docker-compose*
+**/*.csproj.user
+**/*.csproj.dotsettings
+**/*.csproj.userprefs
+**/*.csproj.docker-compose
+**/bin
+**/obj
