@@ -1,69 +1,144 @@
-# DevOps Challenge (.NET)
+# DevOpsChallenge Sales API
 
-## Overview :wave:
+## Overview
+This project is a Sales API. The application is built using .NET Core and provides functionalities related to sales management.
 
-This challenge focuses on the diverse skills needed by a DevOps Engineer to develop a.NET 5 application.
+## Prerequisites
+- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [Docker](https://www.docker.com/products/docker-desktop)
+- [Git](https://git-scm.com/)
 
-In completing the challenge, you're welcome to change all aspects of the initial repository, including:
-* Directory and file structure.
-* Solution and project names.
-* Namespaces and class names.
-* Code, data, and settings files.
-* NuGet packages and dependencies.
-* This README!
+## Project Setup
 
-The solution should embody best practices, even if the initial solution lacks them.
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/Anuruddhak91/devops-challenge-dotnet.git
+    cd DevOpsChallenge.SalesApi
+    ```
 
-You'll need .NET 5 and SQL Server Local DB to build and run the application locally. On a Mac or Linux device, you can update the connection string (in `appsettings.Development.json` and `DatabaseContextDesignTimeFactory.cs`) and use Docker to launch SQL Server Developer Edition.
+2. **Restore dependencies**:
+    ```bash
+    dotnet restore
+    ```
 
-## Background :blue_book:
+3. **Build the project**:
+    ```bash
+    dotnet build
+    ```
 
-You're a DevOps Engineer working in a small team to launch a new application. The management team will use the new application to view and report on daily sales data.
+4. **Run the project**:
+    ```bash
+    dotnet run --project src/DevOpsChallenge.SalesApi
+    ```
 
-The development team have built a new API to ingest sales data from an existing system and provide endpoints for viewing and reporting the data. A future application will provide a user interface.
+## Running the Application with Docker
 
-*Note: For simplicity of the solution, the API does not require authentication. Don't do this in a real application!*
+1. **Build the Docker image**:
+    ```bash
+    docker build -t devopschallenge.salesapi .
+    ```
 
-## Question :question:
+2. **Run the Docker container**:
+    ```bash
+    docker run -d -p 5000:5000 devopschallenge.salesapi
+    ```
 
-You should:
+3. **Access the application**:
+    Open your browser and navigate to `http://localhost:5000`.
 
-1. Introduce best practices into the solution to ensure a high-quality deliverable and a great developer experience.
+## Project Structure
 
-2. Build and package the application as a container in a CI/CD pipeline ready for deployment
+```
+DevOpsChallenge.SalesApi
+├── src
+│   ├── DevOpsChallenge.SalesApi
+│   ├── DevOpsChallenge.SalesApi.Business
+│   └── DevOpsChallenge.SalesApi.Database
+└── tests
+├── DevOpsChallenge.SalesApi.Business.UnitTests
+└── DevOpsChallenge.SalesApi.IntegrationTests
+```
 
-You'll need to select a CI/CD tool to complete the challenge. Feel free to use your preferred platform, such as GitHub Actions, Azure Pipelines, Circle CI, or Travis CI.
+- **src/**: Contains the source code of the application.
+- **tests/**: Contains unit and integration tests.
 
-*Note: This challenge does NOT require infrastructure provisioning or deployment. This challenge has designed to be possible without incurring any licencing, hosting or tooling costs.*
+## Development
 
-## Good to have (optional) :zap:
+### Adding New Features
 
-You've received feedback on the application from members of the project team. Optionally, fix these issues, or provide instructions back to the developer on the next steps to take:
+1. Create a new branch:
+    ```sh
+    git checkout -b feature/your-feature-name
+    ```
 
-1. The front end developer consuming the Sales API has mentioned the Swagger UI interface doesn't contain descriptions of operations, parameters, or responses. The Swagger UI interface should display the code comments written by the API developer.
+2. Make your changes and commit them:
+    ```sh
+    git add .
+    git commit -m "feat: add your feature"
+    ```
 
-2. The security team have identified the application is revealing the technology used by sending the response header `Server: Kestrel`. This header should not be present in responses sent by the server.
+3. Push the changes to your branch:
+    ```sh
+    git push origin feature/your-feature-name
+    ```
 
-3. The database administrator has identified poor query performance when a sale record is retrieved using its transaction ID. They have recommended creating an index.
+4. Open a pull request for review.
 
-## Attempt :clock5:
+### Running Tests
 
-Spend as much or as little time as you like on this challenge. DevOps Engineers wear many hats :crown:, and there's always more opportunity for change and improvement. **Limit yourself to the time you have. Make the changes that deliver the most value.**
+To run all unit tests and integration tests:
 
-If you're looking for inspiration of changes to make, consider:
+```bash
+dotnet test
+```
 
-* Getting started documentation for a new developer.
-* Configuring Git's behaviour for particular files.
-* Versioning of artifacts.
-* Linting and code quality analysis.
-* Scanning for code vulnerabilities.
-* Running unit tests.
-* Assessing code coverage.
-* Indexing PDBs for debugging in a deployed environment.
-* Preparing to run integration tests on a deployed environment.
-* Preparing to deploy database schema migrations.
-* Generating a client for the API.
+## Code Style
 
-There's always more to learn and do. **You don't need to do all of these to demonstrate your ability.** This list is a suggestion of ideas. You're welcome to do something else.
+Please follow the [C# Coding Conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) for this project.
 
-Be kind to yourself, and enjoy the challenge. :heart:
+### Conventional Commits
+
+A conventional commit is a standardized commit message format that helps maintain a clear project history and automates the versioning process.
+
+### Commit Message Format
+
+Each commit message should consist of a header, an optional body, and an optional footer. The header has a special format that includes a type, an optional scope, and a subject:
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+### Types
+
+- feat: A new feature for the user.
+- fix: A bug fix for the user.
+- docs: Documentation only changes.
+- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).
+- refactor: A code change that neither fixes a bug nor adds a feature.
+- perf: A code change that improves performance.
+- test: Adding missing tests or correcting existing tests.
+- chore: Changes to the build process or auxiliary tools and libraries such as documentation generation.
+
+### Examples
+
+Example 1: Adding a new feature
+
+```
+feat(user): add ability to view user profile
+```
+
+Example 2: Fixing a bug
+
+```
+Example 2: Fixing a bug
+```
+
+Example 3: Documentation update
+
+```
+docs(readme): update setup instructions
+```
