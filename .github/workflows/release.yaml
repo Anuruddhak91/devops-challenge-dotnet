@@ -1,0 +1,62 @@
+---
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate a new tag
+        id: semver
+        uses: ietf-tools/semver-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          noVersionBumpBehavior: current
+          noNewCommitBehavior: warn
+
+      - name: Output Tags
+        run: |
+          echo "Next: ${{ steps.semver.outputs.next }}"
+          echo "NextStrict: ${{ steps.semver.outputs.nextStrict }}"
+          echo "Current: ${{ steps.semver.outputs.current }}"
+          echo "Version Increment: ${{ steps.semver.outputs.bump }}"
+
+      - name: Update CHANGELOG
+        if: steps.semver.outputs.bump != ''
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ steps.semver.outputs.next }}
+
+      - name: Create Release
+        if: steps.semver.outputs.bump != ''
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          allowUpdates: false
+          draft: false
+          makeLatest: true
+          name: ${{ steps.semver.outputs.next }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.semver.outputs.next }}
+
+      - name: Commit CHANGELOG.md
+        if: steps.semver.outputs.bump != ''
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: main
+          commit_message: 'docs: update CHANGELOG.md for ${{ steps.semver.outputs.next }} [skip ci]'
+          file_pattern: CHANGELOG.md
+
