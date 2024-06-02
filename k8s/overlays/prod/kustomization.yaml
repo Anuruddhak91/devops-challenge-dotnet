@@ -1,0 +1,7 @@
+resources:
+  - ../../base/deployment.yaml
+  - ../../base/service.yaml
+
+images:
+  - name: docker pull ghcr.io/anuruddhak91/devops-challenge-dotnet 
+    newTag: latest
