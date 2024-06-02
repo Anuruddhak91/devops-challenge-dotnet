@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Generate a new tag
+      id: semver
+      uses: ietf-tools/semver-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        noVersionBumpBehavior: current
+        noNewCommitBehavior: warn
+
+    - name: Output Tags
+      run: |
+        echo "Next: ${{ steps.semver.outputs.next }}"
+        echo "NextStrict: ${{ steps.semver.outputs.nextStrict }}"
+        echo "Current: ${{ steps.semver.outputs.current }}"
+        echo "Version Increment: ${{ steps.semver.outputs.bump }}"
+
+    - name: Build and push Docker image
+      run: |
+        IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/${{ github.repository }}
+        docker build -t $IMAGE_NAME:${{ steps.semver.outputs.next }} -f /mnt/data/Dockerfile .
+        docker push $IMAGE_NAME:${{ steps.semver.outputs.next }}
+
+    - name: Create Release
+      if: steps.semver.outputs.bump != ''
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        allowUpdates: false
+        draft: false
+        makeLatest: true
+        name: ${{ steps.semver.outputs.next }}
+        body: ${{ steps.build_changelog.outputs.changelog }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.semver.outputs.next }}
