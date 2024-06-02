@@ -32,14 +32,6 @@ jobs:
           echo "Current: ${{ steps.semver.outputs.current }}"
           echo "Version Increment: ${{ steps.semver.outputs.bump }}"
 
-      - name: Update CHANGELOG
-        if: steps.semver.outputs.bump != ''
-        id: changelog
-        uses: requarks/changelog-action@v1
-        with:
-          token: ${{ github.token }}
-          tag: ${{ steps.semver.outputs.next }}
-
       - name: Create Release
         if: steps.semver.outputs.bump != ''
         uses: ncipollo/release-action@v1.14.0
@@ -50,6 +42,14 @@ jobs:
           name: ${{ steps.semver.outputs.next }}
           body: ${{ steps.changelog.outputs.changes }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.semver.outputs.next }}
+
+      - name: Update CHANGELOG
+        if: steps.semver.outputs.bump != ''
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
           tag: ${{ steps.semver.outputs.next }}
 
       - name: Commit CHANGELOG.md
