@@ -13,11 +13,12 @@ This project is a Sales API. The application is built using .NET Core and provid
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/Anuruddhak91/devops-challenge-dotnet.git
-    cd DevOpsChallenge.SalesApi
+    cd devops-challenge-dotnet
     ```
 
 2. **Restore dependencies**:
     ```bash
+    cd src/DevOpsChallenge.SalesApi
     dotnet restore
     ```
 
@@ -134,7 +135,7 @@ feat(user): add ability to view user profile
 Example 2: Fixing a bug
 
 ```
-Example 2: Fixing a bug
+Example 2: fix: Fixing a bug
 ```
 
 Example 3: Documentation update
